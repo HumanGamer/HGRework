@@ -3,8 +3,8 @@ Configs: {
 		DisplayName: Mod Settings
 
 		Headers: {
-			Pyramids: Pyramids Header
-			General: General Header
+			Pyramids: Pyramids
+			Variants: Variants
 		}
 
 		MinPyramids: {
@@ -20,6 +20,16 @@ Configs: {
 		ReworkPyramids: {
 			Label: Rework Pyramids
 			Tooltip: Whether or not to enable reworked pyramid generation with more rooms
+		}
+
+		MinPyramidRooms: {
+			Label: Minimum Pyramid Rooms
+			Tooltip: The minimum number of rooms that can generate in a pyramid. (Rework Pyramids must be enabled)
+		}
+
+		MaxPyramidRooms: {
+			Label: Maximum Pyramid Rooms
+			Tooltip: The maximum number of rooms that can generate in a pyramid. (Rework Pyramids must be enabled)
 		}
 
 		BothEvils: {

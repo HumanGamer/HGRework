@@ -12,6 +12,7 @@ using Terraria.IO;
 using Terraria.ModLoader;
 using Terraria.Utilities;
 using Terraria.WorldBuilding;
+using static Terraria.Utilities.NPCUtils;
 
 namespace HGRework.HGWorldGen.Structures
 {
@@ -71,7 +72,7 @@ namespace HGRework.HGWorldGen.Structures
 				return false;
 
 			int extend = Rand.Next(9, 13);
-			int height = y + Rand.Next(75, 125);
+			int height = y + Rand.Next(75 * 2, 125 * 2);//Rand.Next(75, 125);
 
 			int width = GeneratePyramidShape(x, targetTile, y - Rand.Next(0, 7), 1, height);
 
@@ -99,6 +100,11 @@ namespace HGRework.HGWorldGen.Structures
 					Main.tile[j, i].ClearTile();
 					WorldGen.PlaceTile(j, i, targetTile, forced: true);
 				}
+
+				// If we don't cap this, the pyramid could take up the entire desert.
+				// Technically this makes it not a pyramid, but it probably won't be noticeable.
+				if (width > 100)
+					continue;
 
 				width++;
 			}
@@ -174,11 +180,22 @@ namespace HGRework.HGWorldGen.Structures
 			bool swapDirection = true;
 			bool generatedRoom = false;
 
+			int roomCount = 0;
+
+			int minPyramidRooms = ModSettings.Instance.MinPyramidRooms;
+			int maxPyramidRooms = ModSettings.Instance.MaxPyramidRooms;
+
+			if (minPyramidRooms > maxPyramidRooms)
+				minPyramidRooms = maxPyramidRooms;
+
+			int targetRoomCount = Rand.Next(minPyramidRooms, maxPyramidRooms);
+
 			while (true)
 			{
 				for (int i = startY; i <= startY + roomHeight; i++)
 				{
 					Main.tile[startX, i].ClearTile();
+					Main.tile[startX, i].WallType = WallID.SandstoneBrick;
 				}
 
 				startX += direction;
@@ -190,11 +207,12 @@ namespace HGRework.HGWorldGen.Structures
 				if (num12 <= 0)
 				{
 					bool success = false;
-					if (!swapDirection && !generatedRoom)
+					if (!swapDirection && !generatedRoom && roomCount < targetRoomCount)
 					{
 						generatedRoom = true;
 						success = true;
 						GenerateRoom(ref direction, roomHeight, ref startX, startY);
+						roomCount++;
 					}
 
 					if (swapDirection)
@@ -206,6 +224,9 @@ namespace HGRework.HGWorldGen.Structures
 					else if (success)
 					{
 						num12 = Rand.Next(10, 15);
+
+						swapDirection = true;
+						generatedRoom = false;
 					}
 					else
 					{
@@ -223,27 +244,43 @@ namespace HGRework.HGWorldGen.Structures
 
 		private void GenerateRoom(ref int direction, int roomHeight, ref int startX, int startY)
 		{
-			int num17 = Rand.Next(7, 13);
+			int someNum = Rand.Next(7, 13);
 			int num18 = Rand.Next(23, 28);
 			int num19 = num18;
 			int initialX = startX;
 			while (num18 > 0)
 			{
-				for (int num21 = startY - num17 + roomHeight; num21 <= startY + roomHeight; num21++)
+				for (int i = 1; i <= 4; i++)
+				{
+					Main.tile[startX, startY - someNum + roomHeight - i].ClearTile();
+					WorldGen.PlaceTile(startX, startY - someNum + roomHeight - i, TileID.SandstoneBrick, forced: true);
+
+					Main.tile[startX, startY + roomHeight + i].ClearTile();
+					WorldGen.PlaceTile(startX, startY + roomHeight + i, TileID.SandstoneBrick, forced: true);
+				}
+
+				for (int i = startY - someNum + roomHeight; i <= startY + roomHeight; i++)
 				{
 					if (num18 == num19 || num18 == 1)
 					{
-						if (num21 >= startY - num17 + roomHeight + 2)
-							Main.tile[startX, num21].ClearTile();
+						if (i >= startY - someNum + roomHeight + 2)
+						{
+							Main.tile[startX, i].ClearTile();
+							Main.tile[startX, i].WallType = WallID.SandstoneBrick;
+						}
 					}
 					else if (num18 == num19 - 1 || num18 == 2 || num18 == num19 - 2 || num18 == 3)
 					{
-						if (num21 >= startY - num17 + roomHeight + 1)
-							Main.tile[startX, num21].ClearTile();
+						if (i >= startY - someNum + roomHeight + 1)
+						{
+							Main.tile[startX, i].ClearTile();
+							Main.tile[startX, i].WallType = WallID.SandstoneBrick;
+						}
 					}
 					else
 					{
-						Main.tile[startX, num21].ClearTile();
+						Main.tile[startX, i].ClearTile();
+						Main.tile[startX, i].WallType = WallID.SandstoneBrick;
 					}
 				}
 
@@ -270,10 +307,10 @@ namespace HGRework.HGWorldGen.Structures
 				WorldGen.PlaceSmallPile(i2, j2, Rand.Next(16, 19), 1, TileID.SmallPiles);
 			}
 
-			WorldGen.PlaceTile(left + 2, startY - num17 + roomHeight + 1, 91, mute: true, forced: false, -1, Rand.Next(4, 7));
-			WorldGen.PlaceTile(left + 3, startY - num17 + roomHeight, 91, mute: true, forced: false, -1, Rand.Next(4, 7));
-			WorldGen.PlaceTile(right - 2, startY - num17 + roomHeight + 1, 91, mute: true, forced: false, -1, Rand.Next(4, 7));
-			WorldGen.PlaceTile(right - 3, startY - num17 + roomHeight, 91, mute: true, forced: false, -1, Rand.Next(4, 7));
+			WorldGen.PlaceTile(left + 2, startY - someNum + roomHeight + 1, 91, mute: true, forced: false, -1, Rand.Next(4, 7));
+			WorldGen.PlaceTile(left + 3, startY - someNum + roomHeight, 91, mute: true, forced: false, -1, Rand.Next(4, 7));
+			WorldGen.PlaceTile(right - 2, startY - someNum + roomHeight + 1, 91, mute: true, forced: false, -1, Rand.Next(4, 7));
+			WorldGen.PlaceTile(right - 3, startY - someNum + roomHeight, 91, mute: true, forced: false, -1, Rand.Next(4, 7));
 			for (int i = left; i <= right; i++)
 			{
 				WorldGen.PlacePot(i, startY + roomHeight, TileID.Pots, Rand.Next(25, 28));
@@ -310,10 +347,9 @@ namespace HGRework.HGWorldGen.Structures
 			int num29 = Rand.Next(100, 200);
 			int num30 = Rand.Next(500, 800);
 			bool flag2 = true;
-			int num31 = roomHeight;
 			int num12 = Rand.Next(10, 50);
 			if (direction == 1)
-				currentX -= num31;
+				currentX -= roomHeight;
 
 			int num32 = Rand.Next(5, 10);
 			while (flag2)
@@ -321,21 +357,21 @@ namespace HGRework.HGWorldGen.Structures
 				num29--;
 				num30--;
 				num12--;
-				for (int num33 = currentX - num32 - Rand.Next(0, 2); num33 <= currentX + num31 + num32 + Rand.Next(0, 2); num33++)
+				for (int i = currentX - num32 - Rand.Next(0, 2); i <= currentX + roomHeight + num32 + Rand.Next(0, 2); i++)
 				{
 					int num34 = startY;
-					if (num33 >= currentX && num33 <= currentX + num31)
+					if (i >= currentX && i <= currentX + roomHeight)
 					{
-						Main.tile[num33, num34].ClearTile();
+						Main.tile[i, num34].ClearTile();
 					}
 					else
 					{
-						Main.tile[num33, num34].ClearTile();
-						WorldGen.PlaceTile(num33, num34, targetTile, forced: true);
+						Main.tile[i, num34].ClearTile();
+						WorldGen.PlaceTile(i, num34, targetTile, forced: true);
 					}
 
-					if (num33 >= currentX - 1 && num33 <= currentX + 1 + num31)
-						Main.tile[num33, num34].WallType = WallID.SandstoneBrick;
+					if (i >= currentX - 1 && i <= currentX + 1 + roomHeight)
+						Main.tile[i, num34].WallType = WallID.SandstoneBrick;
 				}
 
 				startY++;
@@ -343,7 +379,7 @@ namespace HGRework.HGWorldGen.Structures
 				if (num29 <= 0)
 				{
 					flag2 = false;
-					for (int num35 = currentX + 1; num35 <= currentX + num31 - 1; num35++)
+					for (int num35 = currentX + 1; num35 <= currentX + roomHeight - 1; num35++)
 					{
 						if (Main.tile[num35, startY].HasTile)
 							flag2 = true;
