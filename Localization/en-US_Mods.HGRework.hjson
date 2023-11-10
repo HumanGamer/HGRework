@@ -1,0 +1,35 @@
+Configs: {
+	ModSettings: {
+		DisplayName: Mod Settings
+
+		Headers: {
+			Pyramids: Pyramids Header
+			General: General Header
+		}
+
+		MinPyramids: {
+			Label: Minimum Pyramids
+			Tooltip: The minimum number of pyramids that can generate in a world.
+		}
+
+		MaxPyramids: {
+			Label: Maximum Pyramids
+			Tooltip: The maximum number of pyramids that can generate in a world.
+		}
+
+		ReworkPyramids: {
+			Label: Rework Pyramids
+			Tooltip: Whether or not to enable reworked pyramid generation with more rooms
+		}
+
+		BothEvils: {
+			Label: Both Evils
+			Tooltip: Whether or not to enable having both corruption and crimson in a world
+		}
+
+		BothOres: {
+			Label: Both Ores
+			Tooltip: Whether or not to enable having both ore alternatives in a world
+		}
+	}
+}
