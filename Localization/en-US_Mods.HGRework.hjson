@@ -7,19 +7,24 @@ Configs: {
 			Variants: Variants
 		}
 
+		ExtraPyramids: {
+			Label: Generate Extra Pyramids
+			Tooltip: Enable this to generate extra pyramids in a world
+		}
+
 		MinPyramids: {
 			Label: Minimum Pyramids
-			Tooltip: The minimum number of pyramids that can generate in a world.
+			Tooltip: The minimum number of pyramids that can generate in a world. (Generate Extra Pyramids must be enabled)
 		}
 
 		MaxPyramids: {
 			Label: Maximum Pyramids
-			Tooltip: The maximum number of pyramids that can generate in a world.
+			Tooltip: The maximum number of pyramids that can generate in a world. (Generate Extra Pyramids must be enabled)
 		}
 
 		ReworkPyramids: {
 			Label: Rework Pyramids
-			Tooltip: Whether or not to enable reworked pyramid generation with more rooms
+			Tooltip: Enable this to rework pyramid generation with more rooms
 		}
 
 		MinPyramidRooms: {
@@ -34,12 +39,12 @@ Configs: {
 
 		BothEvils: {
 			Label: Both Evils
-			Tooltip: Whether or not to enable having both corruption and crimson in a world
+			Tooltip: Enable this to have both corruption and crimson in a world
 		}
 
 		BothOres: {
 			Label: Both Ores
-			Tooltip: Whether or not to enable having both ore alternatives in a world
+			Tooltip: Enable this to have both ore variants in a world
 		}
 	}
 }

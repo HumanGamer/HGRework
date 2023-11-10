@@ -46,7 +46,7 @@ namespace HGRework.HGWorldGen.Structures
 		private bool On_WorldGen_Pyramid(On_WorldGen.orig_Pyramid orig, int i, int j)
 		{
 			// If we have already generated the maximum number of pyramids, return false
-			if (_pyramidLocations.Count > ModSettings.Instance.MaxPyramids)
+			if (_pyramidLocations.Count > ModSettings.Instance.MaxPyramids && ModSettings.Instance.ExtraPyramids)
 				return false;
 
 			// Otherwise, call the original function
@@ -188,7 +188,7 @@ namespace HGRework.HGWorldGen.Structures
 			if (minPyramidRooms > maxPyramidRooms)
 				minPyramidRooms = maxPyramidRooms;
 
-			int targetRoomCount = Rand.Next(minPyramidRooms, maxPyramidRooms);
+			int targetRoomCount = Rand.Next(minPyramidRooms, maxPyramidRooms + 1);
 
 			while (true)
 			{
@@ -481,6 +481,9 @@ namespace HGRework.HGWorldGen.Structures
 
 		protected void Generate(GenerationProgress progress, GameConfiguration configuration)
 		{
+			if (!ModSettings.Instance.ExtraPyramids)
+				return;
+
 			int minPyramids = ModSettings.Instance.MinPyramids;
 			int maxPyramids = ModSettings.Instance.MaxPyramids;
 

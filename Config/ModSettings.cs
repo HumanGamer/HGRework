@@ -16,6 +16,9 @@ namespace HGRework.Config
 
 		[Header("Pyramids")]
 
+		[DefaultValue(true)]
+		public bool ExtraPyramids;
+
 		[DefaultValue(1)]
 		[Range(0, 3)]
 		[Increment(1)]
@@ -37,7 +40,7 @@ namespace HGRework.Config
 		[Slider]
 		public int MinPyramidRooms;
 
-		[DefaultValue(3)]
+		[DefaultValue(4)]
 		[Range(1, 10)]
 		[Increment(1)]
 		[Slider]
